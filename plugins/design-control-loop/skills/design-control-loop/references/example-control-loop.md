@@ -13,7 +13,7 @@ It is a useful example because the sensor and controller come almost entirely fr
 The [`react-doctor`](https://github.com/millionco/react-doctor) CLI scans the app and reports prioritized issues; `doctor.config.ts` configures which rules run and which paths/rules are ignored. It runs locally exactly as it does in CI:
 
 ```bash
-bunx react-doctor --project '@codelayer/riptide-ui' --diff false --yes
+bunx react-doctor@<exact-version> --project '@codelayer/riptide-ui' --diff false --yes
 ```
 
 Chosen because it is repeatable, configurable, and lives outside the editor/lint config so a stray inline comment can't quietly switch it off — a trade-off that mattered *for this team*, not a requirement of all sensors.
@@ -29,7 +29,7 @@ A CodeLayer agent runs with the repo's `react-doctor` skill. Its per-issue loop 
 ```bash
 bun run typecheck
 bun run quality
-bunx react-doctor --project '@codelayer/riptide-ui' --staged   # no new issues in staged files
+bunx react-doctor@<exact-version> --project '@codelayer/riptide-ui' --staged   # no new issues in staged files
 ```
 
 ## Disturbances + dampener

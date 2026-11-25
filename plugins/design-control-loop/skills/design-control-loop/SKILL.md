@@ -100,7 +100,7 @@ Before any CI exists, land the sensor and controller as version-controlled comma
 
 - Run the **sensor** standalone and confirm it produces a stable, usable measurement.
 - Run the **controller** on real sensor output and confirm it selects a sensible next increment.
-- Run the **actuator** locally via its headless CLI command on a controller-selected target, and confirm it makes the change and passes validation.
+- Run the **actuator** locally via its headless CLI command on a controller-selected target, and confirm it makes the change and passes validation. This spends the user's model API credits, so run it only once the user agrees.
 
 Only proceed to CI once each piece runs locally on its own. This keeps the loop debuggable and makes the workflow a thin orchestrator of things the user can already run.
 
@@ -148,9 +148,9 @@ Without this, a daily loop can stack up duplicate or conflicting PRs while no on
 
 **Read the following references:** `references/workflow-template.yml`.
 
-**Validate** the workflow YAML (`bunx js-yaml file.yml`, `python -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" file.yml`, or `yq`) and confirm every path named by the skill, workflow, and memory file exists or is created by this task.
+**Validate** the workflow YAML (`bunx js-yaml@4.1.0 file.yml`, `python -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" file.yml`, or `yq`) and confirm every path named by the skill, workflow, and memory file exists or is created by this task.
 
-**Dry-run.** A workflow cannot be `workflow_dispatch`-ed until it has run once. Temporarily add a `push` trigger for the current branch, push, watch it run, then remove the trigger. Review any PR it opens to confirm the loop's behavior.
+**Dry-run.** A workflow cannot be `workflow_dispatch`-ed until it has run once. With the user's go-ahead (this pushes under their git identity and spends CI and API credits), temporarily add a `push` trigger for the current branch, push, watch it run, then remove the trigger. Review any PR it opens to confirm the loop's behavior.
 
 **Ready to iterate faster** (once the loop is tuned and producing consistent, high-quality output): increase the schedule frequency; widen the controller's batch (e.g. select N targets per run); run the sense→control→actuate cycle N times per workflow run; or run the workflow multiple times and assign one PR to each teammate.
 

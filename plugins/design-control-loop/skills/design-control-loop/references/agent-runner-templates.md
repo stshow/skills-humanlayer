@@ -1,6 +1,6 @@
 # Agent Runner Templates
 
-Use one of these inside the workflow's agent run step. Broad permission modes are appropriate only on trusted, isolated runners.
+Use one of these inside the workflow's agent run step. Broad permission modes are appropriate only on trusted, isolated runners. Replace each `<exact-version>` with a pinned release of the agent CLI.
 
 Each agent outputs differently, so response extraction varies. The goal is to get the agent's final formatted response into `/tmp/pr-body.md` for the PR body.
 
@@ -22,7 +22,7 @@ Secret: `ANTHROPIC_API_KEY`.
 - uses: actions/setup-node@v4
   with:
     node-version: 24
-- run: npm install -g @anthropic-ai/claude-code
+- run: npm install -g @anthropic-ai/claude-code@<exact-version>
 - name: Run Claude Code
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -58,7 +58,7 @@ Secret: `OPENAI_API_KEY`.
 - uses: actions/setup-node@v4
   with:
     node-version: 24
-- run: npm install -g @openai/codex
+- run: npm install -g @openai/codex@<exact-version>
 - name: Login Codex
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -84,7 +84,7 @@ Secret: provider-specific, commonly `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`.
 
 ```yaml
 - uses: oven-sh/setup-bun@v2
-- run: bun install -g opencode-ai
+- run: bun install -g opencode-ai@<exact-version>
 - name: Run OpenCode
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -124,7 +124,7 @@ Secret: usually `ANTHROPIC_API_KEY` for Anthropic-backed runs.
     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     FORCE_COLOR: "3"
   run: |
-    bunx @humanlayer/cli@latest codelayer \
+    bunx @humanlayer/cli@<exact-version> codelayer \
       --provider anthropic \
       --model claude-opus-4-8 \
       --thinking high \

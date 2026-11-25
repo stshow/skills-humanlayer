@@ -73,7 +73,9 @@ jobs:
           # originally opened the PR. Non-matching workflows exit before checkout/setup.
           PR_DATA=$(gh api "$PR_URL")
           BODY=$(echo "$PR_DATA" | jq -r '.body // ""')
-          if grep -Fq "<!-- codelayer-agent:workflow=$WORKFLOW_ID;" <<< "$BODY"; then
+          # Also require the agent label: outside contributors cannot add labels, but can forge the body marker.
+          if grep -Fq "<!-- codelayer-agent:workflow=$WORKFLOW_ID;" <<< "$BODY" &&
+             jq -e --arg l "$AGENT_LABEL" 'any(.labels[]?; .name == $l)' <<< "$PR_DATA" > /dev/null; then
             echo "run_agent=true" >> "$GITHUB_OUTPUT"
             echo "number=$(echo "$PR_DATA" | jq -r '.number')" >> "$GITHUB_OUTPUT"
             echo "head_ref=$(echo "$PR_DATA" | jq -r '.head.ref')" >> "$GITHUB_OUTPUT"
@@ -158,7 +160,7 @@ jobs:
             --comment-body "$COMMENT_BODY" > /tmp/agent-prompt.md
 
           # NOTE: replace with your agent runner from references/agent-runner-templates.md
-          bunx @humanlayer/cli@latest codelayer \
+          bunx @humanlayer/cli@<exact-version> codelayer \
             --provider anthropic --model claude-sonnet-4-6 --thinking high \
             --prompt "$(cat /tmp/agent-prompt.md)" \
             2>&1 | tee /tmp/agent-output.txt
@@ -215,7 +217,7 @@ jobs:
 
           # NOTE: replace this block with your agent runner from references/agent-runner-templates.md.
           # Each agent has different output formats — see that file for extraction steps.
-          bunx @humanlayer/cli@latest codelayer \
+          bunx @humanlayer/cli@<exact-version> codelayer \
             --provider anthropic --model claude-opus-4-8 --thinking high \
             --prompt "$PROMPT" \
             2>&1 | tee /tmp/agent-output.txt
@@ -256,14 +258,16 @@ jobs:
         if: steps.agent_gate.outputs.run_agent == 'true' && github.event_name == 'issue_comment'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_REF: ${{ steps.agent_gate.outputs.head_ref }}
+          PR_NUMBER: ${{ steps.agent_gate.outputs.number }}
         run: |
           if ! git diff --quiet HEAD; then
             git add -A
             git commit -m "chore: iterate <task-slug> agent feedback"
-            git push origin HEAD:${{ steps.agent_gate.outputs.head_ref }}
+            git push origin "HEAD:$HEAD_REF"
           fi
 
-          gh pr comment ${{ steps.agent_gate.outputs.number }} --body-file /tmp/pr-body.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/pr-body.md
 
       - name: Upload agent output
         if: always() && steps.agent_gate.outputs.run_agent == 'true'
