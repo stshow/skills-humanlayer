@@ -64,7 +64,7 @@ Completion criterion: every placeholder in the workflow, prompt, and memory temp
 Extract the smallest repeatable job the agent should perform. Work through these three questions with the user:
 
 **What are we finding?** How does the agent identify targets for this run?
-- A CLI tool that reports issues (e.g., `bunx react-doctor`, `eslint --format json`)
+- A CLI tool that reports issues (e.g., `bunx react-doctor@<pinned-version>`, `eslint --format json`)
 - A search pattern (e.g., files matching `*.test.ts` without coverage, components using deprecated APIs)
 - A diff or changelog (e.g., new dependencies since last release, changed files in a PR)
 - An old pattern that should be replaced with a new pattern or migrated to a new framework
@@ -161,7 +161,7 @@ Completion criterion: the workflow can run from `workflow_dispatch` without rely
 
 ```bash
 # Node.js / bun (js-yaml)
-bunx js-yaml .github/workflows/agent-<task-name>.yml > /dev/null && echo "Valid YAML"
+bunx js-yaml@4.1.0 .github/workflows/agent-<task-name>.yml > /dev/null && echo "Valid YAML"
 
 # Python
 python -c "import yaml; yaml.safe_load(open('.github/workflows/agent-<task-name>.yml'))"
@@ -192,7 +192,7 @@ GitHub Actions workflows cannot be manually dispatched via `workflow_dispatch` u
        # ...
    ```
 
-2. Commit and push all the new files (workflow, skill, memory file, scripts).
+2. Because pushing uses the user's GitHub identity and the run spends their API credits, get the user's confirmation, then commit and push all the new files (workflow, skill, memory file, scripts).
 
 3. The workflow will trigger on push. Watch the Actions tab to verify it runs successfully.
 

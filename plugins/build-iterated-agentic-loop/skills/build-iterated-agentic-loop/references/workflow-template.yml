@@ -161,7 +161,7 @@ jobs:
               --comment-body "$COMMENT_BODY" > /tmp/codelayer-prompt.md
 
             # NOTE: Replace with agent runner from references/agent-runner-templates.md
-            bunx @humanlayer/cli@latest codelayer \
+            bunx @humanlayer/cli@<pinned-version> codelayer \
               --provider anthropic \
               --model claude-sonnet-4-6 \
               --thinking high \
@@ -197,7 +197,7 @@ jobs:
 
           # NOTE: Replace this block with the agent runner from references/agent-runner-templates.md
           # Each agent has different output formats - see that file for extraction steps.
-          bunx @humanlayer/cli@latest codelayer \
+          bunx @humanlayer/cli@<pinned-version> codelayer \
             --provider anthropic \
             --model claude-opus-4-8 \
             --thinking high \
@@ -242,14 +242,16 @@ jobs:
         if: steps.agent_gate.outputs.run_agent == 'true' && github.event_name == 'issue_comment'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_REF: ${{ steps.agent_gate.outputs.head_ref }}
+          PR_NUMBER: ${{ steps.agent_gate.outputs.number }}
         run: |
           if ! git diff --quiet HEAD; then
             git add -A
             git commit -m "chore: iterate <task-slug> agent feedback"
-            git push origin HEAD:${{ steps.agent_gate.outputs.head_ref }}
+            git push origin "HEAD:$HEAD_REF"
           fi
 
-          gh pr comment ${{ steps.agent_gate.outputs.number }} --body-file /tmp/pr-body.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/pr-body.md
 
       - name: Upload agent output
         if: always() && steps.agent_gate.outputs.run_agent == 'true'

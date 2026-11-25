@@ -14,7 +14,7 @@ Secret: `ANTHROPIC_API_KEY`.
 - uses: actions/setup-node@v4
   with:
     node-version: 24
-- run: npm install -g @anthropic-ai/claude-code
+- run: npm install -g @anthropic-ai/claude-code@<pinned-version>
 - name: Run Claude Code
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -50,7 +50,7 @@ Secret: `OPENAI_API_KEY`.
 - uses: actions/setup-node@v4
   with:
     node-version: 24
-- run: npm install -g @openai/codex
+- run: npm install -g @openai/codex@<pinned-version>
 - name: Login Codex
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -76,7 +76,7 @@ Secret: provider-specific, commonly `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`.
 
 ```yaml
 - uses: oven-sh/setup-bun@v2
-- run: bun install -g opencode-ai
+- run: bun install -g opencode-ai@<pinned-version>
 - name: Run OpenCode
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -116,7 +116,7 @@ Secret: usually `ANTHROPIC_API_KEY` for Anthropic-backed runs.
     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     FORCE_COLOR: "3"
   run: |
-    bunx @humanlayer/cli@latest codelayer \
+    bunx @humanlayer/cli@<pinned-version> codelayer \
       --provider anthropic \
       --model claude-opus-4-8 \
       --thinking high \
