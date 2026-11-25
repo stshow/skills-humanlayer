@@ -9,3 +9,4 @@ Every skill on this branch that is changed from the Upstream, with its Patch log
 | plugins/narrow-react-prop-types/skills/narrow-react-prop-types | 2 | [patches.md](plugins/narrow-react-prop-types/skills/narrow-react-prop-types/patches.md) |
 | plugins/rpi/skills/rpi | 2 | [patches.md](plugins/rpi/skills/rpi/patches.md) |
 | plugins/show-me/skills/show-me | 1 | [patches.md](plugins/show-me/skills/show-me/patches.md) |
+| plugins/visual-pr/skills/visual-pr | 1 | [patches.md](plugins/visual-pr/skills/visual-pr/patches.md) |
